@@ -1,8 +1,3 @@
-# Extension-less files:
-*
-!/**/
-!*.*
-
 # Prerequisites
 *.d
 
