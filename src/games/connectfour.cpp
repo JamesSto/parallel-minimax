@@ -76,7 +76,7 @@ void ConnectFourState::update_matching(int col, int row, int col_dir, int row_di
         n = 0;
         curr_c = col;
         curr_r = row;
-        while (curr_c >= 0 && curr_c < BOARD_SIZE && curr_r >= 0 && curr_c < BOARD_SIZE 
+        while (curr_c >= 0 && curr_c < BOARD_SIZE && curr_r >= 0 && curr_r < BOARD_SIZE 
             && this->board[curr_c][curr_r].current == p) {
             count += 1;
             n += 1;
@@ -96,24 +96,26 @@ void ConnectFourState::update_matching(int col, int row, int col_dir, int row_di
 
 void ConnectFourState::prompt_move() {
     bool filled = false;
-    int col;
-    int row;
+    int col_index;
+    int row_index;
     while(!filled) {
         std::cout << "Column to place piece: ";
-        std::cin >> col;
-        for(row = BOARD_SIZE-1; row >= 0; row--) {
-            if (this->board[col][row].current = none) {
-                this->board[col][row].current = this->turn;
+        std::cin >> col_index;
+        for(row_index = BOARD_SIZE-1; row_index >= 0; row_index--) {
+            if (this->board[row_index][col_index].current == none) {
+                this->board[row_index][col_index].current = this->turn;
                 filled = true;
                 break;
             }
         }
     }
 
-    this->update_matching(col, row, 0, 1, 0, turn); //Horizontal
-    this->update_matching(col, row, -1, 1, 1, turn); // Upper right
-    this->update_matching(col, row, 1, 0, 2, turn); // Vertical
-    this->update_matching(col, row, -1, -1, 3, turn); // Upper left
+    std::cout << "row index: " << row_index << "\n";
+
+    this->update_matching(col_index, row_index, 0, 1, 0, turn); //Horizontal
+    this->update_matching(col_index, row_index, -1, 1, 1, turn); // Upper right
+    this->update_matching(col_index, row_index, 1, 0, 2, turn); // Vertical
+    this->update_matching(col_index, row_index, -1, -1, 3, turn); // Upper left
 
     if (this->turn == player_one) {
         this->turn = player_two;
