@@ -169,19 +169,19 @@ void ConnectFourState::prompt_move() {
     }
 }
 
-int main() {
-    std::cout << "Welcome to connect four!\n";
+// int main() {
+//     std::cout << "Welcome to connect four!\n";
 
-    ConnectFourState *game = new ConnectFourState();
-    while(true) {
-        std::cout << "**********************************\n";
-        for(GameState *g : game->next_states()) {
-            g->output_state();
-        }
-        std::cout << "**********************************\n";
-        game->output_state();
-        game->prompt_move();
-    }
+//     ConnectFourState *game = new ConnectFourState();
+//     while(true) {
+//         std::cout << "**********************************\n";
+//         for(GameState *g : game->next_states()) {
+//             g->output_state();
+//         }
+//         std::cout << "**********************************\n";
+//         game->output_state();
+//         game->prompt_move();
+//     }
 
-    return 0;
-}
+//     return 0;
+// }
