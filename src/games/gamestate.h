@@ -10,6 +10,7 @@ public:
     virtual float get_score_heuristic() = 0;
     virtual bool game_over() = 0;
     virtual std::vector<GameState *> next_states() = 0;
+    ~GameState() {};
 
     // Outputs state of the game to terminal
     virtual void output_state() = 0;

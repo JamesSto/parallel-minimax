@@ -5,12 +5,13 @@
 
 class Minimax {
  public:
-    Minimax();
+    explicit Minimax(int max_depth);
     GameState *minimax(GameState *gs);
 
  private:
-    float sim_maximizer(GameState *gs);
-    float sim_minimizer(GameState *gs);
+    float sim_maximizer(GameState *gs, int depth);
+    float sim_minimizer(GameState *gs, int depth);
+    int max_depth;
 };
 
 #endif //SRC_MINIMAX_H_

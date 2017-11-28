@@ -18,15 +18,18 @@ typedef struct Square {
     short matching[NUM_AXIS] = {0,0,0,0};
 } Square;
 
-class ConnectFourState : GameState {
+class ConnectFourState : public GameState {
 public:
     ConnectFourState();
+    virtual ~ConnectFourState();
     bool game_over() override;
     float get_score_heuristic() override;
     std::vector<GameState *> next_states() override;
 
     void output_state() override;
     void prompt_move() override;
+    Player get_turn();
+
 private:
     void update_matching(int col, int row, int col_dir, int row_dir, int matching_index, Player p);
     bool apply_move(int col_index);

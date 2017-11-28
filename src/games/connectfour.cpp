@@ -1,13 +1,15 @@
 #include "gamestate.h"
 #include "connectfour.h"
+#include "../minimax.h"
 
 #include <iostream>
 #include <vector>
 
 
-ConnectFourState::ConnectFourState() {
-    return;
-}
+ConnectFourState::ConnectFourState() {}
+
+ConnectFourState::~ConnectFourState() {}
+
 
 bool ConnectFourState::game_over() {
     for(int i = 0; i < BOARD_SIZE; i++) {
@@ -149,6 +151,12 @@ bool ConnectFourState::apply_move(int col_index) {
     this->update_matching(row_index, col_index, 1, 0, 2, this->turn); // Vertical
     this->update_matching(row_index, col_index, -1, -1, 3, this->turn); // Upper left
 
+    if (this->turn == player_one) {
+        this->turn = player_two;
+    } else {
+        this->turn = player_one;
+    }
+
     return true;
 }
 
@@ -161,26 +169,33 @@ void ConnectFourState::prompt_move() {
         std::cin >> col_index;
         filled = this->apply_move(col_index);
     }
+}
 
-    if (this->turn == player_one) {
-        this->turn = player_two;
-    } else {
-        this->turn = player_one;
-    }
+Player ConnectFourState::get_turn() {
+    return this->turn;
 }
 
 int main() {
     std::cout << "Welcome to connect four!\n";
 
+    // why did you make this a pointer? there's no need to do so 
+    // I think this would actually cause a memory leak
     ConnectFourState *game = new ConnectFourState();
-    while(true) {
-        std::cout << "**********************************\n";
-        for(GameState *g : game->next_states()) {
-            g->output_state();
+    Minimax minimax(7);
+
+    bool is_user_turn = true;
+    while (true) {
+        if (is_user_turn) {
+            game->output_state();
+            game->prompt_move();
+        } else {
+            game->output_state();
+            ConnectFourState *new_state = dynamic_cast<ConnectFourState *>(minimax.minimax(game));
+            delete game;
+            game = new_state;
+
         }
-        std::cout << "**********************************\n";
-        game->output_state();
-        game->prompt_move();
+        is_user_turn = !is_user_turn;
     }
 
     return 0;
