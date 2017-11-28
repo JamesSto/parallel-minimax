@@ -9,8 +9,7 @@ class Minimax {
     GameState *minimax(GameState *gs);
 
  private:
-    float sim_maximizer(GameState *gs, int depth);
-    float sim_minimizer(GameState *gs, int depth);
+    float sim_move(GameState *gs, int depth, bool is_max);
     int max_depth;
 };
 

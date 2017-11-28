@@ -181,7 +181,7 @@ int main() {
     // why did you make this a pointer? there's no need to do so 
     // I think this would actually cause a memory leak
     ConnectFourState *game = new ConnectFourState();
-    Minimax minimax(7);
+    Minimax minimax(3);
 
     bool is_user_turn = true;
     while (true) {
