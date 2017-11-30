@@ -5,6 +5,8 @@
 #include <iostream>
 #include <vector>
 
+#define DEPTH 8
+
 
 ConnectFourState::ConnectFourState() {}
 
@@ -42,7 +44,7 @@ float ConnectFourState::get_score_heuristic() {
             for(int n = 0; n < 4; n++) {
                 // If the game is over, return -1 or 1 depending on who won
                 if (this->board[i][j].matching[n] >= 4) {
-                    return multiplier;
+                    return multiplier*(-1.0);
                 }
 
                 // Add to the score the number in a row at this square
@@ -54,7 +56,7 @@ float ConnectFourState::get_score_heuristic() {
     }
 
     // Divide by an overestimate of the theoretical maximum score
-    return score / (3.0 * BOARD_SIZE * BOARD_SIZE);
+    return (-1.0) * score / (3.0 * BOARD_SIZE * BOARD_SIZE);
 }
 
 std::vector<GameState *> ConnectFourState::next_states() {
@@ -163,7 +165,6 @@ bool ConnectFourState::apply_move(int col_index) {
 void ConnectFourState::prompt_move() {
     bool filled = false;
     int col_index;
-    int row_index;
     while(!filled) {
         std::cout << "Column to place piece: ";
         std::cin >> col_index;
@@ -181,10 +182,10 @@ int main() {
     // why did you make this a pointer? there's no need to do so 
     // I think this would actually cause a memory leak
     ConnectFourState *game = new ConnectFourState();
-    Minimax minimax(3);
+    Minimax minimax(DEPTH);
 
     bool is_user_turn = true;
-    while (true) {
+    while (!game->game_over()) {
         if (is_user_turn) {
             game->output_state();
             game->prompt_move();
@@ -197,6 +198,8 @@ int main() {
         }
         is_user_turn = !is_user_turn;
     }
+
+    std::cout << "Winner is: " << (game->get_score_heuristic() == 1 ? "BLUE" : "RED") << std::endl;
 
     return 0;
 }

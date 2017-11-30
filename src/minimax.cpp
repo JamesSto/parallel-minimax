@@ -1,40 +1,48 @@
 #include "minimax.h"
+#include <time.h>
+
 
 #include <vector>
+
+#define EPSILON std::numeric_limits<float>::epsilon()
+#define DEPTH_FACTOR 0.00001
 
 Minimax::Minimax(int max_depth) : max_depth(max_depth) {}
 
 GameState *Minimax::minimax(GameState *gs) {
+    clock_t t = clock();
     auto new_states = gs->next_states();
     float max_state_score = -1;
-    int max_state = -1;
-    for (int i = 0; i < new_states.size(); i++) {
-        float score = this->sim_move(new_states[i], 1, false);
+    GameState *max_state = new_states[0];
+    for (GameState *gs : new_states) {
+        float score = this->sim_move(gs, 1, false);
         if (score > max_state_score) {
-            max_state = i;
+            max_state = gs;
             max_state_score = score;
         }
     }
-    return new_states[max_state];
+    std::cout << "Score heuristic after my move is: " << max_state_score << "\n";
+    std::cout << "Calculated in: " << ((float)(clock() - t)/CLOCKS_PER_SEC) << " seconds\n";
+    return max_state;
 }
 
 float Minimax::sim_move(GameState *gs, int depth, bool is_max) {
-    if (gs->game_over() || depth >= this->max_depth) {
-        std::cout << "max term " << gs->get_score_heuristic() << " " << depth << std::endl;
-        return gs->get_score_heuristic();
+    bool done = gs->game_over();
+    if (done || depth >= this->max_depth) {
+        float s = gs->get_score_heuristic();
+        if (done) {
+            s += DEPTH_FACTOR * depth * s * (-1.0);
+        }
+        return s;
     }
     auto new_states = gs->next_states();
-    float superlative_state_score;
-    if (is_max) {
-        superlative_state_score = -1;
-    } else {
-        superlative_state_score = 1;
+
+    float optimal_state_score = is_max ? -1 : 1;
+
+    for (GameState *gs : new_states) {
+        float score = this->sim_move(gs, depth + 1, !is_max);
+        optimal_state_score = is_max ? std::max(score, optimal_state_score) : 
+                                       std::min(score, optimal_state_score);
     }
-    for (int i = 0; i < new_states.size(); i++) {
-        float score = this->sim_move(new_states[i], depth + 1, !is_max);
-        if ((score > superlative_state_score && is_max) || (score < superlative_state_score && !is_max)) {
-            superlative_state_score = score;
-        } 
-    }
-    return superlative_state_score;
+    return optimal_state_score;
 }
