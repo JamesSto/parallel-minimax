@@ -1,6 +1,6 @@
 #include "gamestate.h"
 #include "connectfour.h"
-#include "../minimax.h"
+#include "../minimax/minimax.h"
 
 #include <iostream>
 #include <vector>

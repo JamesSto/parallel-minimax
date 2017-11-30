@@ -1,7 +1,7 @@
 #ifndef SRC_MINIMAX_H_
 #define SRC_MINIMAX_H_
 
-#include "games/gamestate.h"
+#include "../games/gamestate.h"
 
 class Minimax {
  public:
