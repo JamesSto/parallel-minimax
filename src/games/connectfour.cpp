@@ -5,7 +5,7 @@
 #include <iostream>
 #include <vector>
 
-#define DEPTH 8
+#define DEPTH 7
 
 
 ConnectFourState::ConnectFourState() {}
@@ -199,6 +199,7 @@ int main() {
         is_user_turn = !is_user_turn;
     }
 
+    game->output_state();
     std::cout << "Winner is: " << (game->get_score_heuristic() == 1 ? "BLUE" : "RED") << std::endl;
 
     return 0;
