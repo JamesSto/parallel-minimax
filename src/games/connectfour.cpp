@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <vector>
+#include <assert.h>
 
 #define DEPTH 7
 
@@ -14,49 +15,15 @@ ConnectFourState::~ConnectFourState() {}
 
 
 bool ConnectFourState::game_over() {
-    for(int i = 0; i < BOARD_SIZE; i++) {
-        for(int j = 0; j < BOARD_SIZE; j++) {
-            for(int axis = 0; axis < NUM_AXIS; axis++) {
-                if(this->board[i][j].matching[axis] >= 4) {
-                    return true;
-                }
-            }
-        }
-    }
-    return false;
+    return this->winner != none;
 }
 
 float ConnectFourState::get_score_heuristic() {
-    //P1 is the maximizing player
-    float score = 0;
-    for(int i = 0; i < BOARD_SIZE; i++) {
-        for(int j = 0; j < BOARD_SIZE; j++) {
-                float multiplier;
-            if (this->board[i][j].current == player_two) {
-                multiplier = -1;
-            }
-            else if (this->board[i][j].current == player_one){
-                multiplier = 1;
-            }
-            else {
-                multiplier = 0;
-            }
-            for(int n = 0; n < 4; n++) {
-                // If the game is over, return -1 or 1 depending on who won
-                if (this->board[i][j].matching[n] >= 4) {
-                    return multiplier*(-1.0);
-                }
-
-                // Add to the score the number in a row at this square
-                // This will triple count three in a rows, double count 2 in a rows, etc
-                // Which is what we want.
-                score += multiplier * this->board[i][j].matching[n];
-            }
-        }
+    if (this->winner != none) {
+        return this->winner == player_one ? -1 : 1;
     }
-
     // Divide by an overestimate of the theoretical maximum score
-    return (-1.0) * score / (3.0 * BOARD_SIZE * BOARD_SIZE);
+    return (-1.0) * this->heuristic / (3.0 * BOARD_SIZE * BOARD_SIZE);
 }
 
 std::vector<GameState *> ConnectFourState::next_states() {
@@ -125,12 +92,20 @@ void ConnectFourState::update_matching(int col, int row, int col_dir, int row_di
             curr_r = row + n*row_dir*dir;
         }
     }
+
+    int multiplier = this->turn == player_one ? 1 : -1;
+
     count -= 1; // Don't double count the central square
     int len = count;
     while(count > 0) {
         curr_c += col_dir;
         curr_r += row_dir;
+        this->heuristic -= multiplier*this->board[curr_c][curr_r].matching[matching_index];
+        this->heuristic += multiplier*len;
         this->board[curr_c][curr_r].matching[matching_index] = len;
+        if (len >= 4) {
+            this->winner = this->turn;
+        }
         count -= 1;
     }
 }
@@ -181,7 +156,7 @@ int main() {
 
     // why did you make this a pointer? there's no need to do so 
     // I think this would actually cause a memory leak
-    ConnectFourState *game = new ConnectFourState();
+    GameState *game = new ConnectFourState();
     Minimax minimax(DEPTH);
 
     bool is_user_turn = true;
@@ -191,7 +166,7 @@ int main() {
             game->prompt_move();
         } else {
             game->output_state();
-            ConnectFourState *new_state = dynamic_cast<ConnectFourState *>(minimax.minimax(game));
+            GameState *new_state = minimax.minimax(game);
             delete game;
             game = new_state;
 

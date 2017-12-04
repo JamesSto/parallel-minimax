@@ -35,6 +35,8 @@ private:
     bool apply_move(int col_index);
     Square board[BOARD_SIZE][BOARD_SIZE];
     Player turn = player_one;
+    Player winner = none;
+    int heuristic = 0;
 };
 
 #endif //SRC_GAMES_CONNECTFOUR_H_
