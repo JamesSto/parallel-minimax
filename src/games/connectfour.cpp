@@ -18,6 +18,10 @@ bool ConnectFourState::game_over() {
     return this->winner != none;
 }
 
+int ConnectFourState::get_size() {
+    return sizeof(ConnectFourState);
+}
+
 float ConnectFourState::get_score_heuristic() {
     if (this->winner != none) {
         return this->winner == player_one ? -1 : 1;
@@ -26,15 +30,14 @@ float ConnectFourState::get_score_heuristic() {
     return (-1.0) * this->heuristic / (3.0 * BOARD_SIZE * BOARD_SIZE);
 }
 
-std::vector<GameState *> ConnectFourState::next_states() {
-    std::vector<GameState *> *next_states = new std::vector<GameState *>();
-    for(int i = 0; i < BOARD_SIZE; i++) {
-        ConnectFourState *s = new ConnectFourState(*this);
-        if(s->apply_move(i)) {
-            next_states->push_back(s);
-        }
+bool ConnectFourState::next_state(GameState *gs, int n, bool *is_valid) {
+    if (n >= BOARD_SIZE) {
+        *is_valid = false;
+        return false;
     }
-    return *next_states;
+    *is_valid = true;
+    ConnectFourState *s = new (gs) ConnectFourState(*this);
+    return s->apply_move(n);
 }
 
 
@@ -157,7 +160,7 @@ int main() {
     // why did you make this a pointer? there's no need to do so 
     // I think this would actually cause a memory leak
     GameState *game = new ConnectFourState();
-    Minimax minimax(DEPTH);
+    Minimax minimax(DEPTH, game);
 
     bool is_user_turn = true;
     while (!game->game_over()) {

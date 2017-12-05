@@ -24,11 +24,13 @@ public:
     virtual ~ConnectFourState();
     bool game_over() override;
     float get_score_heuristic() override;
-    std::vector<GameState *> next_states() override;
+    bool next_state(GameState *gs, int n, bool *is_valid) override;
 
     void output_state() override;
     void prompt_move() override;
+    int get_size() override;
     Player get_turn();
+
 
 private:
     void update_matching(int col, int row, int col_dir, int row_dir, int matching_index, Player p);
