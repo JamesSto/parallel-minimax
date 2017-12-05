@@ -25,10 +25,8 @@ GameState *Minimax::minimax(GameState *gs) {
 
     while(not_done) {
         not_done = gs->next_state(current, n, &is_valid);
-        std::cout << "Getting state " << n << "\n";
         if(is_valid) {
             float score = this->sim_move(current, 1, false);
-            std::cout << "Score: " << score << "\n";
             if (score > max_state_score) {
                 memmove(max_state, current, gs->get_size());
                 max_state_score = score;
@@ -37,6 +35,8 @@ GameState *Minimax::minimax(GameState *gs) {
         n += 1;
     }
 
+    std::cout << "Score heuristic after my move is: " << max_state_score << "\n";
+    std::cout << "Calculated in: " << ((float)(clock() - t)/CLOCKS_PER_SEC) << " seconds\n";
     return max_state;
 }
 
