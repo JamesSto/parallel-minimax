@@ -10,11 +10,11 @@ PROF = -pg
 GAMES_DIR=src/games
 MINIMAX_DIR=src/minimax
 
-naive : $(NAIVE_OBJS)
-	$(CC) $(PROF) $(LFLAGS) $(NAIVE_OBJS) -o game
-
 tuned : $(TUNED_OBJS)
 	$(CC) $(PROF) $(LFLAGS) $(TUNED_OBJS) -o game
+
+naive : $(NAIVE_OBJS)
+	$(CC) $(PROF) $(LFLAGS) $(NAIVE_OBJS) -o game
 
 parallel : $(PARALLEL_OBJS)
 	$(CC) $(PROF) $(LFLAGS) $(PARALLEL_OBJS) -o game

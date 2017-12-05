@@ -13,9 +13,13 @@ Minimax::Minimax(int max_depth, GameState *gs) : max_depth(max_depth) {
     this->state_space = (GameState *)malloc(gs->get_size() * max_depth);
 }
 
+GameState *Minimax::get_space(int depth, int state_size) {
+    return (GameState *)((char *)this->state_space + state_size*depth);
+}
+
 GameState *Minimax::minimax(GameState *gs) {
     clock_t t = clock();
-    GameState *current = (GameState *)malloc(gs->get_size());
+    GameState *current = this->get_space(0, gs->get_size());
     float max_state_score = -1;
     GameState *max_state = (GameState *)malloc(gs->get_size());
 
@@ -51,7 +55,7 @@ float Minimax::sim_move(GameState *gs, int depth, bool is_max) {
     }
     float optimal_state_score = is_max ? -1 : 1;
 
-    GameState *current = (GameState *)malloc(gs->get_size());
+    GameState *current = this->get_space(depth, gs->get_size());
     int n = 0;
     bool is_valid;
     bool not_done = true;
