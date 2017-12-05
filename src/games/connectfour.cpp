@@ -5,8 +5,9 @@
 #include <iostream>
 #include <vector>
 #include <assert.h>
+#include <string.h>
 
-#define DEPTH 7
+#define DEPTH 8
 
 
 ConnectFourState::ConnectFourState() {}
@@ -37,7 +38,12 @@ bool ConnectFourState::next_state(GameState *gs, int n, bool *is_valid) {
     }
     *is_valid = true;
     ConnectFourState *s = new (gs) ConnectFourState(*this);
-    return s->apply_move(n);
+    if (s->apply_move(n)) {
+        return true;
+    } else {
+        *is_valid = false;
+        return true;
+    }
 }
 
 
@@ -154,8 +160,13 @@ Player ConnectFourState::get_turn() {
     return this->turn;
 }
 
-int main() {
+int main(int argc, char** argv) {
     std::cout << "Welcome to connect four!\n";
+
+    bool play_self = false;
+    if (argc > 1 && strcmp(argv[1], "--self") == 0) {
+        play_self = true;
+    }
 
     // why did you make this a pointer? there's no need to do so 
     // I think this would actually cause a memory leak
@@ -166,10 +177,16 @@ int main() {
     while (!game->game_over()) {
         if (is_user_turn) {
             game->output_state();
-            game->prompt_move();
+            if (play_self) {
+                GameState *new_state = minimax.minimax(game, false);
+                delete game;
+                game = new_state;
+            } else {
+                game->prompt_move();
+            }
         } else {
             game->output_state();
-            GameState *new_state = minimax.minimax(game);
+            GameState *new_state = minimax.minimax(game, true);
             delete game;
             game = new_state;
 

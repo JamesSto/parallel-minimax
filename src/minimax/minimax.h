@@ -6,7 +6,7 @@
 class Minimax {
  public:
     explicit Minimax(int max_depth, GameState* gs);
-    GameState *minimax(GameState *gs);
+    GameState *minimax(GameState *gs, bool is_max);
 
  private:
     float sim_move(GameState *gs, int depth, bool is_max);

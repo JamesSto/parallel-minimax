@@ -9,13 +9,13 @@
 #define BOARD_SIZE 7
 #define NUM_AXIS 4
 
-enum Player {player_one, player_two, none};
+enum Player : char {player_one, player_two, none};
 
 typedef struct Square {
-    Player current = none;
+    Player current = none; 
     // number matching in each direction starting from horizontal and moving
     // counterclockwise and upward
-    short matching[NUM_AXIS] = {0,0,0,0};
+    char matching[NUM_AXIS] = {0,0,0,0};
 } Square;
 
 class ConnectFourState : public GameState {

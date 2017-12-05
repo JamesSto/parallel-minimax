@@ -17,11 +17,11 @@ GameState *Minimax::get_space(int depth, int state_size) {
     return (GameState *)((char *)this->state_space + state_size*depth);
 }
 
-GameState *Minimax::minimax(GameState *gs) {
+GameState *Minimax::minimax(GameState *gs, bool is_max) {
     clock_t t = clock();
     GameState *current = this->get_space(0, gs->get_size());
-    float max_state_score = -1;
-    GameState *max_state = (GameState *)malloc(gs->get_size());
+    float best_state_score = is_max ? -1 : 1;
+    GameState *best_state = (GameState *)malloc(gs->get_size());
 
     int n = 0;
     bool is_valid;
@@ -30,18 +30,18 @@ GameState *Minimax::minimax(GameState *gs) {
     while(not_done) {
         not_done = gs->next_state(current, n, &is_valid);
         if(is_valid) {
-            float score = this->sim_move(current, 1, false);
-            if (score > max_state_score) {
-                memmove(max_state, current, gs->get_size());
-                max_state_score = score;
+            float score = this->sim_move(current, 1, !is_max);
+            if ((is_max && score > best_state_score) || (!is_max && score < best_state_score)) {
+                memmove(best_state, current, gs->get_size());
+                best_state_score = score;
             }
         }
         n += 1;
     }
 
-    std::cout << "Score heuristic after my move is: " << max_state_score << "\n";
+    std::cout << "Score heuristic after my move is: " << best_state_score << "\n";
     std::cout << "Calculated in: " << ((float)(clock() - t)/CLOCKS_PER_SEC) << " seconds\n";
-    return max_state;
+    return best_state;
 }
 
 float Minimax::sim_move(GameState *gs, int depth, bool is_max) {
