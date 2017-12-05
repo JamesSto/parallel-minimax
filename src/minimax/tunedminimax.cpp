@@ -49,6 +49,7 @@ float Minimax::sim_move(GameState *gs, int depth, bool is_max) {
     if (done || depth >= this->max_depth) {
         float s = gs->get_score_heuristic();
         if (done) {
+            // TODO: FIX THIS TO ACCOUNT FOR WHO IS IS_MAX
             s += DEPTH_FACTOR * depth * s * (-1.0);
         }
         return s;

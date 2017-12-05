@@ -3,7 +3,7 @@ TUNED_OBJS=tunedminimax.o connectfour.o
 PARALLEL_OBJS=parallelminimax.o connectfour.o
 CC = g++
 DEBUG = -g
-CPPFLAGS = -std=c++14 -Wall -c -O3 -g
+CPPFLAGS = -std=c++11 -Wall -c -O3 -g
 LFLAGS = -Wall $(DEBUG)
 PROF = -pg
 
