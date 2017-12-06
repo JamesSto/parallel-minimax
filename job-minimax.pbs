@@ -1,0 +1,13 @@
+#!/bin/sh
+
+#PBS -l nodes=1:ppn=12
+#PBS -l walltime=0:50:00
+#PBS -N minimax
+#PBS -j oe
+
+# Change directories to where this script (and our executable) is.
+cd "$PBS_O_WORKDIR"
+export OMP_NUM_THREADS=12
+
+# Run the computations we want to.
+./game --self

@@ -3,12 +3,15 @@ TUNED_OBJS=tunedminimax.o connectfour.o
 PARALLEL_OBJS=parallelminimax.o connectfour.o
 CC = g++
 DEBUG = -g
-CPPFLAGS = -std=c++14 -Wall -c -O3 -g
-LFLAGS = -Wall $(DEBUG)
+CPPFLAGS = -std=c++14 -Wall -c -O3 -g -fopenmp
+LFLAGS = -Wall -fopenmp $(DEBUG)
 PROF = -pg
 
 GAMES_DIR=src/games
 MINIMAX_DIR=src/minimax
+
+parallel : $(PARALLEL_OBJS)
+	$(CC) $(PROF) $(LFLAGS) $(PARALLEL_OBJS) -o game
 
 tuned : $(TUNED_OBJS)
 	$(CC) $(PROF) $(LFLAGS) $(TUNED_OBJS) -o game
@@ -16,8 +19,6 @@ tuned : $(TUNED_OBJS)
 naive : $(NAIVE_OBJS)
 	$(CC) $(PROF) $(LFLAGS) $(NAIVE_OBJS) -o game
 
-parallel : $(PARALLEL_OBJS)
-	$(CC) $(PROF) $(LFLAGS) $(PARALLEL_OBJS) -o game
 
 connectfour.o : $(GAMES_DIR)/connectfour.h  $(GAMES_DIR)/connectfour.cpp
 	$(CC) $(PROF) $(CPPFLAGS) $(GAMES_DIR)/connectfour.cpp

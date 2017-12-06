@@ -2,6 +2,7 @@
 #include <time.h>
 #include <string.h>
 #include <vector>
+#include <omp.h>
 
 #define EPSILON std::numeric_limits<float>::epsilon()
 #define DEPTH_FACTOR 0.00001
@@ -15,7 +16,7 @@ GameState *Minimax::get_space(int depth, int state_size) {
 }
 
 GameState *Minimax::minimax(GameState *gs, bool is_max) {
-    clock_t t = clock();
+    clock_t t = omp_get_wtime();;
     GameState *current = this->get_space(0, gs->get_size());
     float best_state_score = is_max ? -1 : 1;
     GameState *best_state = (GameState *)malloc(gs->get_size());
@@ -27,7 +28,12 @@ GameState *Minimax::minimax(GameState *gs, bool is_max) {
     while(not_done) {
         not_done = gs->next_state(current, n, &is_valid);
         if(is_valid) {
-            float score = this->sim_move(current, 1, !is_max);
+            float score;
+            #pragma omp parallel
+            {
+               #pragma omp single
+                score = this->sim_move(current, 1, !is_max);
+            }
             if ((is_max && score > best_state_score) || (!is_max && score < best_state_score)) {
                 memmove(best_state, current, gs->get_size());
                 best_state_score = score;
@@ -37,7 +43,7 @@ GameState *Minimax::minimax(GameState *gs, bool is_max) {
     }
 
     std::cout << "Score heuristic after my move is: " << best_state_score << "\n";
-    std::cout << "Calculated in: " << ((float)(clock() - t)/CLOCKS_PER_SEC) << " seconds\n";
+    std::cout << "Calculated in: " << (omp_get_wtime() - t) << " seconds\n";
     return best_state;
 }
 
@@ -52,20 +58,30 @@ float Minimax::sim_move(GameState *gs, int depth, bool is_max) {
     }
     float optimal_state_score = is_max ? -1 : 1;
 
-    GameState *current = this->get_space(depth, gs->get_size());
     int n = 0;
     bool is_valid;
     bool not_done = true;
+    std::vector<GameState *>* states = new std::vector<GameState *>();
 
     while(not_done) {
+        GameState *current = (GameState *) malloc(gs->get_size());
         not_done = gs->next_state(current, n, &is_valid);
+        states->push_back(current);
         if(is_valid) {
-            float score = this->sim_move(current, depth + 1, !is_max);
-            optimal_state_score = is_max ? std::max(score, optimal_state_score) : 
-                                            std::min(score, optimal_state_score);
+            #pragma omp task firstprivate(n) shared(optimal_state_score)
+            {
+                float score = this->sim_move((*states)[n], depth + 1, !is_max);
+                #pragma omp critical
+                {
+                optimal_state_score = is_max ? std::max(score, optimal_state_score) : 
+                                                std::min(score, optimal_state_score);
+                }
+            }
         }
         n += 1;
     }
+
+    #pragma omp taskwait
 
     return optimal_state_score;
 }

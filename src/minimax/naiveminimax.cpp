@@ -1,9 +1,6 @@
 #include "minimax.h"
 #include <time.h>
 #include <string.h>
-
-
-
 #include <vector>
 
 #define EPSILON std::numeric_limits<float>::epsilon()
