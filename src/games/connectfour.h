@@ -29,6 +29,7 @@ public:
     void output_state() override;
     void prompt_move() override;
     int get_size() override;
+    int get_branching_factor() override;
     Player get_turn();
 
 

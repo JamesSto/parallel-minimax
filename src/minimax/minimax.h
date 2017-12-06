@@ -10,7 +10,7 @@ class Minimax {
 
  private:
     float sim_move(GameState *gs, int depth, bool is_max);
-    GameState *get_space(int depth, int state_size);
+    GameState *get_space(int depth, int state_size, int thread_num);
     int max_depth;
     void *state_space;
 };

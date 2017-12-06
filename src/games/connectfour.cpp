@@ -19,6 +19,10 @@ bool ConnectFourState::game_over() {
     return this->winner != none;
 }
 
+int ConnectFourState::get_branching_factor() {
+    return BOARD_SIZE;
+}
+
 int ConnectFourState::get_size() {
     return sizeof(ConnectFourState);
 }

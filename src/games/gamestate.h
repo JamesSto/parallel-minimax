@@ -17,6 +17,7 @@ public:
     // Prompts user for next move and updates based on input
     virtual void prompt_move() = 0;
     virtual int get_size() = 0;
+    virtual int get_branching_factor() = 0;
 };
 
 
