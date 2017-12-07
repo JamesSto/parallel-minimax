@@ -7,39 +7,28 @@
 #define DEPTH_FACTOR 0.00001
 
 template <class Game>
-Minimax<Game>::Minimax(int max_depth, Game *gs) : max_depth(max_depth) {
-    this->state_space = (Game *)malloc(gs->get_size() * max_depth * gs->get_branching_factor());
-}
-
-template <class Game>
-Game *Minimax<Game>::get_space(int depth, int state_size, int thread_num) {
-    // return (Game *)((char *)this->state_space + 
-    //                             (thread_num * (state_size * max_depth)) + 
-    //                             state_size*depth);
-
-    return (Game *) malloc(state_size);
-}
+Minimax<Game>::Minimax(int max_depth, Game *gs) : max_depth(max_depth) {}
 
 template <class Game>
 Game *Minimax<Game>::minimax(Game *gs, bool is_max) {
     clock_t t = omp_get_wtime();
     float best_state_score = is_max ? -1 : 1;
-    Game *best_state = (Game *)malloc(gs->get_size());
+    Game best_state;
 
     int bfactor = gs->get_branching_factor();
 
-    #pragma omp parallel shared(best_state_score, best_state, is_max, gs) num_threads(bfactor)
+    #pragma omp parallel shared(best_state_score, best_state, gs) num_threads(bfactor)
     {
         bool is_valid;
-        Game *current = this->get_space(0, gs->get_size(), 0);
-        gs->next_state(current, omp_get_thread_num(), &is_valid);
+        Game current;
+        gs->next_state(&current, omp_get_thread_num(), &is_valid);
         if(is_valid) {
-            float score = this->sim_move(current, 1, !is_max);
+            float score = this->sim_move(&current, 1, !is_max);
             std::cout << "Thread: " << omp_get_thread_num() << " score " << score << "\n";
             #pragma omp critical
             {
                 if ((is_max && score > best_state_score) || (!is_max && score < best_state_score)) {
-                    memmove(best_state, current, gs->get_size());
+                    memmove(&best_state, &current, sizeof(Game));
                     best_state_score = score;
                 }
             }
@@ -48,7 +37,7 @@ Game *Minimax<Game>::minimax(Game *gs, bool is_max) {
 
     std::cout << "Score heuristic after my move is: " << best_state_score << "\n";
     std::cout << "Calculated in: " << (omp_get_wtime() - t) << " seconds\n";
-    return best_state;
+    return new Game(best_state);
 }
 
 template <class Game>
@@ -64,15 +53,15 @@ float Minimax<Game>::sim_move(Game *gs, int depth, bool is_max) {
     }
     float optimal_state_score = is_max ? -1 : 1;
 
-    Game *current = this->get_space(depth, gs->get_size(), omp_get_thread_num());
+    Game current;
     int n = 0;
     bool is_valid;
     bool not_done = true;
 
     while(not_done) {
-        not_done = gs->next_state(current, n, &is_valid);
+        not_done = gs->next_state(&current, n, &is_valid);
         if(is_valid) {
-            float score = this->sim_move(current, depth + 1, !is_max);
+            float score = this->sim_move(&current, depth + 1, !is_max);
             optimal_state_score = is_max ? std::max(score, optimal_state_score) : 
                                             std::min(score, optimal_state_score);
         }

@@ -4,7 +4,7 @@ PARALLEL_OBJS=parallelminimax.o connectfour.o
 TASK_OBJS=taskminimax.o connectfour.o
 CC = g++
 DEBUG = -g
-CPPFLAGS = -std=c++14 -Wall -c -O3 -g -fopenmp -DUSE_EXPORT_KEYWORD
+CPPFLAGS = -std=c++11 -Wall -c -O3 -g -fopenmp
 LFLAGS = -Wall -fopenmp $(DEBUG)
 PROF = -pg
 
@@ -12,17 +12,17 @@ GAMES_DIR=src/games
 MINIMAX_DIR=src/minimax
 
 tuned : 
-	$(CC) $(PROF) $(LFLAGS) $(GAMES_DIR)/connectfour.cpp -DTUNED -o game
+    $(CC) $(CPPFLAGS) $(PROF) $(LFLAGS) $(GAMES_DIR)/connectfour.cpp -DTUNED -o game
 
 naive : 
-	$(CC) $(PROF) $(LFLAGS) $(GAMES_DIR)/connectfour.cpp -DNAIVE -o game
+    $(CC) $(CPPFLAGS) $(PROF) $(LFLAGS) $(GAMES_DIR)/connectfour.cpp -DNAIVE -o game
 
 task : 
-	$(CC) $(PROF) $(LFLAGS) $(GAMES_DIR)/connectfour.cpp -DTASK -o game
+    $(CC) $(CPPFLAGS) $(PROF) $(LFLAGS) $(GAMES_DIR)/connectfour.cpp -DTASK -o game
 
 parallel : 
-	$(CC) $(PROF) $(LFLAGS) $(GAMES_DIR)/connectfour.cpp -DPARALLEL -o game
+    $(CC) $(CPPFLAGS) $(PROF) $(LFLAGS) $(GAMES_DIR)/connectfour.cpp -DPARALLEL -o game
 
 
 clean:
-	rm *.o game
+    rm *.o game
