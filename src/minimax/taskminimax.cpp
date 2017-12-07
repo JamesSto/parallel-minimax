@@ -12,14 +12,14 @@ Minimax<Game>::Minimax(int max_depth, Game *gs) : max_depth(max_depth) {
 }
 
 template <class Game>
-Game *Minimax<Game>::get_space(int depth, int state_size) {
+Game *Minimax<Game>::get_space(int depth, int state_size, int thread_num) {
     return (Game *)((char *)this->state_space + state_size*depth);
 }
 
 template <class Game>
 Game *Minimax<Game>::minimax(Game *gs, bool is_max) {
     clock_t t = omp_get_wtime();;
-    Game *current = this->get_space(0, gs->get_size());
+    Game *current = this->get_space(0, gs->get_size(), 0);
     float best_state_score = is_max ? -1 : 1;
     Game *best_state = (Game *)malloc(gs->get_size());
 
