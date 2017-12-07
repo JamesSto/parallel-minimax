@@ -19,10 +19,6 @@ int ConnectFourState::get_branching_factor() {
     return BOARD_SIZE;
 }
 
-int ConnectFourState::get_size() {
-    return sizeof(ConnectFourState);
-}
-
 float ConnectFourState::get_score_heuristic() {
     if (this->winner != none) {
         return this->winner == player_one ? -1 : 1;

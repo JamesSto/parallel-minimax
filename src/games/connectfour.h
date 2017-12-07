@@ -25,7 +25,6 @@ public:
 
     void output_state();
     void prompt_move();
-    int get_size();
     int get_branching_factor();
     Player get_turn();
 
