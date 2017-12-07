@@ -1,4 +1,3 @@
-#include "gamestate.h"
 #include "connectfour.h"
 #include "../minimax/minimax.h"
 
@@ -35,7 +34,7 @@ float ConnectFourState::get_score_heuristic() {
     return (-1.0) * this->heuristic / (3.0 * BOARD_SIZE * BOARD_SIZE);
 }
 
-bool ConnectFourState::next_state(GameState *gs, int n, bool *is_valid) {
+bool ConnectFourState::next_state(ConnectFourState *gs, int n, bool *is_valid) {
     if (n >= BOARD_SIZE) {
         *is_valid = false;
         return false;
@@ -174,7 +173,7 @@ int main(int argc, char** argv) {
 
     // why did you make this a pointer? there's no need to do so 
     // I think this would actually cause a memory leak
-    GameState *game = new ConnectFourState();
+    ConnectFourState *game = new ConnectFourState();
     Minimax minimax(DEPTH, game);
 
     bool is_user_turn = true;
@@ -182,7 +181,7 @@ int main(int argc, char** argv) {
         if (is_user_turn) {
             game->output_state();
             if (play_self) {
-                GameState *new_state = minimax.minimax(game, false);
+                ConnectFourState *new_state = minimax.minimax(game, false);
                 delete game;
                 game = new_state;
             } else {
@@ -190,7 +189,7 @@ int main(int argc, char** argv) {
             }
         } else {
             game->output_state();
-            GameState *new_state = minimax.minimax(game, true);
+            ConnectFourState *new_state = minimax.minimax(game, true);
             delete game;
             game = new_state;
 

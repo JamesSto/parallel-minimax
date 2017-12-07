@@ -1,8 +1,6 @@
 #ifndef SRC_GAMES_CONNECTFOUR_H_
 #define SRC_GAMES_CONNECTFOUR_H_
 
-#include "gamestate.h"
-
 #include <iostream>
 #include <vector>
 
@@ -18,18 +16,17 @@ typedef struct Square {
     char matching[NUM_AXIS] = {0,0,0,0};
 } Square;
 
-class ConnectFourState : public GameState {
+class ConnectFourState {
 public:
     ConnectFourState();
-    virtual ~ConnectFourState();
-    bool game_over() override;
-    float get_score_heuristic() override;
-    bool next_state(GameState *gs, int n, bool *is_valid) override;
+    bool game_over();
+    float get_score_heuristic();
+    bool next_state(ConnectFourState *gs, int n, bool *is_valid);
 
-    void output_state() override;
-    void prompt_move() override;
-    int get_size() override;
-    int get_branching_factor() override;
+    void output_state();
+    void prompt_move();
+    int get_size();
+    int get_branching_factor();
     Player get_turn();
 
 
