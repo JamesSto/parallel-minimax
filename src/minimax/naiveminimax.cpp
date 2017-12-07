@@ -1,4 +1,3 @@
-#include "minimax.h"
 #include <time.h>
 #include <string.h>
 #include <vector>
@@ -6,7 +5,6 @@
 #define EPSILON std::numeric_limits<float>::epsilon()
 #define DEPTH_FACTOR 0.00001
 
-export
 template <class Game>
 Minimax<Game>::Minimax(int max_depth, Game *gs) : max_depth(max_depth) {
     this->state_space = (Game *)malloc(gs->get_size() * max_depth);

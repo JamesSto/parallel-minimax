@@ -3,7 +3,6 @@
 
 #include "../games/gamestate.h"
 
-export
 template <class Game>
 class Minimax {
  public:

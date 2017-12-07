@@ -11,9 +11,6 @@
 
 ConnectFourState::ConnectFourState() {}
 
-ConnectFourState::~ConnectFourState() {}
-
-
 bool ConnectFourState::game_over() {
     return this->winner != none;
 }
@@ -174,7 +171,7 @@ int main(int argc, char** argv) {
     // why did you make this a pointer? there's no need to do so 
     // I think this would actually cause a memory leak
     ConnectFourState *game = new ConnectFourState();
-    Minimax minimax(DEPTH, game);
+    Minimax<ConnectFourState> minimax(DEPTH, game);
 
     bool is_user_turn = true;
     while (!game->game_over()) {
