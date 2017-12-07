@@ -1,4 +1,3 @@
-#include "minimax.h"
 #include <time.h>
 #include <string.h>
 #include <vector>
@@ -7,19 +6,22 @@
 #define EPSILON std::numeric_limits<float>::epsilon()
 #define DEPTH_FACTOR 0.00001
 
-Minimax::Minimax(int max_depth, GameState *gs) : max_depth(max_depth) {
-    this->state_space = (GameState *)malloc(gs->get_size() * max_depth);
+template <class Game>
+Minimax<Game>::Minimax(int max_depth, Game *gs) : max_depth(max_depth) {
+    this->state_space = (Game *)malloc(gs->get_size() * max_depth);
 }
 
-GameState *Minimax::get_space(int depth, int state_size) {
-    return (GameState *)((char *)this->state_space + state_size*depth);
+template <class Game>
+Game *Minimax<Game>::get_space(int depth, int state_size) {
+    return (Game *)((char *)this->state_space + state_size*depth);
 }
 
-GameState *Minimax::minimax(GameState *gs, bool is_max) {
+template <class Game>
+Game *Minimax<Game>::minimax(Game *gs, bool is_max) {
     clock_t t = omp_get_wtime();;
-    GameState *current = this->get_space(0, gs->get_size());
+    Game *current = this->get_space(0, gs->get_size());
     float best_state_score = is_max ? -1 : 1;
-    GameState *best_state = (GameState *)malloc(gs->get_size());
+    Game *best_state = (Game *)malloc(gs->get_size());
 
     int n = 0;
     bool is_valid;
@@ -47,7 +49,8 @@ GameState *Minimax::minimax(GameState *gs, bool is_max) {
     return best_state;
 }
 
-float Minimax::sim_move(GameState *gs, int depth, bool is_max) {
+template <class Game>
+float Minimax<Game>::sim_move(Game *gs, int depth, bool is_max) {
     bool done = gs->game_over();
     if (done || depth >= this->max_depth) {
         float s = gs->get_score_heuristic();
@@ -61,10 +64,10 @@ float Minimax::sim_move(GameState *gs, int depth, bool is_max) {
     int n = 0;
     bool is_valid;
     bool not_done = true;
-    std::vector<GameState *>* states = new std::vector<GameState *>();
+    std::vector<Game *>* states = new std::vector<Game *>();
 
     while(not_done) {
-        GameState *current = (GameState *) malloc(gs->get_size());
+        Game *current = (Game *) malloc(gs->get_size());
         not_done = gs->next_state(current, n, &is_valid);
         states->push_back(current);
         if(is_valid) {

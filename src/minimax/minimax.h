@@ -17,6 +17,21 @@ class Minimax {
     void *state_space;
 };
 
+#ifdef NAIVE
 #include "naiveminimax.cpp"
+#endif
+
+#ifdef PARALLEL
+#include "parallelminimax.cpp"
+#endif
+
+#ifdef TASK
+#include "taskminimax.cpp"
+#endif
+
+#ifdef TUNED
+#include "tunedminimax.cpp"
+#endif
+
 
 #endif //SRC_MINIMAX_H_

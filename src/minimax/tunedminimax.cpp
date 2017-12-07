@@ -1,4 +1,3 @@
-#include "minimax.h"
 #include <time.h>
 #include <string.h>
 #include <vector>
