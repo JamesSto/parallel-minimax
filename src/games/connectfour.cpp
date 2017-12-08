@@ -8,7 +8,6 @@
 
 #define DEPTH 8
 
-
 ConnectFourState::ConnectFourState() {}
 
 bool ConnectFourState::game_over() {
@@ -188,6 +187,7 @@ int main(int argc, char** argv) {
 
         }
         is_user_turn = !is_user_turn;
+        break;
     }
 
     game->output_state();
