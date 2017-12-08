@@ -85,6 +85,9 @@ float Minimax<Game>::sim_move(Game *gs, int depth, bool is_max) {
     }
 
     #pragma omp taskwait
+    for (Game * g : *states) {
+        free(g);
+    }
 
     return optimal_state_score;
 }
